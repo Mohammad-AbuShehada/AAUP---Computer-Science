@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./css/main.css">
 
     <style>
-        #chat-widget-launcher {
+        #bot-launcher {
             position: fixed;
             bottom: 25px;
             left: 25px;
@@ -22,14 +22,15 @@
             justify-content: center;
             align-items: center;
             color: white;
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 9999;
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
         }
-        #chat-widget-launcher:hover { transform: scale(1.1); }
-        #chat-widget-window {
+        #bot-launcher:hover { transform: scale(1.1); background: #1565c0; }
+
+        #bot-window {
             position: fixed;
             bottom: 95px;
             left: 25px;
@@ -44,17 +45,19 @@
             overflow: hidden;
             z-index: 9999;
             border: 1px solid #ddd;
+            font-family: sans-serif;
         }
-        .chat-header-custom { background: #1e88e5; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        #chat-messages-container { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
-        .chat-input-wrapper { display: flex; border-top: 1px solid #eee; padding: 5px; }
-        .chat-input-wrapper input { flex: 1; border: none; padding: 10px; outline: none; }
-        .chat-input-wrapper button { background: #1e88e5; border: none; color: white; padding: 5px 15px; border-radius: 5px; }
-        .msg-bubble { max-width: 80%; padding: 8px 12px; border-radius: 12px; font-size: 14px; }
-        .msg-row-custom { display: flex; width: 100%; }
-        .msg-row-custom.user { justify-content: flex-end; }
-        .msg-row-custom.user .msg-bubble { background: #1e88e5; color: white; }
-        .msg-row-custom.bot .msg-bubble { background: #eee; color: #333; }
+        .bot-header { background: #1e88e5; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        #bot-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
+        .bot-input-area { display: flex; border-top: 1px solid #eee; padding: 5px; background: white; }
+        .bot-input-area input { flex: 1; border: none; padding: 10px; outline: none; }
+        .bot-input-area button { background: #1e88e5; border: none; color: white; padding: 5px 15px; border-radius: 8px; }
+
+        .bubble { max-width: 80%; padding: 10px; border-radius: 12px; font-size: 14px; line-height: 1.4; }
+        .msg-container { display: flex; width: 100%; }
+        .msg-container.user { justify-content: flex-end; }
+        .msg-container.user .bubble { background: #1e88e5; color: white; border-bottom-left-radius: 2px; }
+        .msg-container.bot .bubble { background: #e9e9e9; color: #333; border-bottom-right-radius: 2px; }
     </style>
 </head>
 <body>
@@ -208,21 +211,21 @@
     </footer>
 </div>
 
-<div id="chat-widget-launcher" onclick="toggleChatWindow()">
+<div id="bot-launcher" onclick="toggleBot()">
     <i class="fas fa-robot"></i>
 </div>
 
-<div id="chat-widget-window">
-    <div class="chat-header-custom">
-        <span>مبتكر - مساعدك الذكي</span>
-        <button onclick="toggleChatWindow()" style="background:none; border:none; color:white; cursor:pointer;">×</button>
+<div id="bot-window">
+    <div class="bot-header">
+        <span>مبتكر - مساعد الطلاب</span>
+        <span onclick="toggleBot()" style="cursor:pointer">×</span>
     </div>
-    <div id="chat-messages-container">
-        <div class="msg-row-custom bot"><div class="msg-bubble">أهلاً بك! أنا هنا لمساعدتك في مواد الـ CS.</div></div>
+    <div id="bot-messages">
+        <div class="msg-container bot"><div class="bubble">مرحباً! اسألني عن أي مادة وسأحاول إيجاد روابطها لك.</div></div>
     </div>
-    <div class="chat-input-wrapper">
-        <input type="text" id="chat-input-field" placeholder="اكتب اسم المادة..." onkeypress="if(event.key==='Enter') sendMessageToBot()">
-        <button onclick="sendMessageToBot()"><i class="fas fa-paper-plane"></i></button>
+    <div class="bot-input-area">
+        <input type="text" id="bot-input" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter') sendToBot()">
+        <button onclick="sendToBot()"><i class="fas fa-paper-plane"></i></button>
     </div>
 </div>
 
@@ -230,24 +233,26 @@
 <script src="./js/main.js"></script>
 
 <script>
-    function toggleChatWindow() {
-        const win = document.getElementById('chat-widget-window');
+    function toggleBot() {
+        const win = document.getElementById('bot-window');
         win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    async function sendMessageToBot() {
-        const input = document.getElementById('chat-input-field');
+    async function sendToBot() {
+        const input = document.getElementById('bot-input');
         const text = input.value.trim();
         if(!text) return;
 
-        const container = document.getElementById('chat-messages-container');
-        container.innerHTML += `<div class="msg-row-custom user"><div class="msg-bubble">${text}</div></div>`;
+        const messages = document.getElementById('bot-messages');
+        messages.innerHTML += `<div class="msg-container user"><div class="bubble">${text}</div></div>`;
         input.value = "";
-        container.scrollTop = container.scrollHeight;
+        messages.scrollTop = messages.scrollHeight;
 
-        const loaderId = 'loader-' + Date.now();
-        container.innerHTML += `<div class="msg-row-custom bot" id="${loaderId}"><div class="msg-bubble">...</div></div>`;
-        container.scrollTop = container.scrollHeight;
+        // لودر بسيط
+        const loader = document.createElement('div');
+        loader.className = 'msg-container bot';
+        loader.innerHTML = `<div class="bubble">...</div>`;
+        messages.appendChild(loader);
 
         try {
             const res = await fetch("/chat", {
@@ -256,18 +261,18 @@
                 body: JSON.stringify({ message: text })
             });
             const data = await res.json();
-            document.getElementById(loaderId).remove();
+            loader.remove();
 
             let reply = data.reply;
-            if (reply.startsWith("http")) {
-                reply = `<a href="${reply}" target="_blank" style="color:#1e88e5">اضغط لفتح الرابط</a>`;
+            if(reply.startsWith("http")) {
+                reply = `<a href="${reply}" target="_blank" style="color:#1e88e5; text-decoration:underline;">اضغط هنا لفتح الرابط</a>`;
             }
 
-            container.innerHTML += `<div class="msg-row-custom bot"><div class="msg-bubble">${reply}</div></div>`;
+            messages.innerHTML += `<div class="msg-container bot"><div class="bubble">${reply}</div></div>`;
         } catch(e) {
-            document.getElementById(loaderId).innerHTML = '<div class="msg-bubble">حدث خطأ في الاتصال.</div>';
+            loader.innerHTML = `<div class="bubble">عذراً، حدث خطأ.</div>`;
         }
-        container.scrollTop = container.scrollHeight;
+        messages.scrollTop = messages.scrollHeight;
     }
 </script>
 </body>
