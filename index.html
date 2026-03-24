@@ -10,54 +10,54 @@
     <link rel="stylesheet" href="./css/main.css">
 
     <style>
+        /* ===== CHATBOT IMPROVED STYLES ===== */
         #bot-launcher {
-            position: fixed;
-            bottom: 25px;
-            left: 25px;
-            width: 60px;
-            height: 60px;
-            background: #1e88e5;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-size: 26px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            z-index: 9999;
-            transition: all 0.3s ease;
+            position: fixed; bottom: 25px; left: 25px; width: 60px; height: 60px;
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-size: 26px; cursor: pointer; z-index: 9999;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: all 0.3s ease;
         }
-        #bot-launcher:hover { transform: scale(1.1); background: #1565c0; }
+        #bot-launcher:hover { transform: scale(1.1); }
 
         #bot-window {
-            position: fixed;
-            bottom: 95px;
-            left: 25px;
-            width: 350px;
+            position: fixed; bottom: 95px; left: 25px; width: 350px; height: 500px;
+            background: white; border-radius: 15px; display: none;
+            flex-direction: column; overflow: hidden; z-index: 9999;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid #ddd;
             max-width: 90vw;
-            height: 500px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 9999;
-            border: 1px solid #ddd;
-            font-family: sans-serif;
         }
-        .bot-header { background: #1e88e5; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        #bot-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 10px; }
-        .bot-input-area { display: flex; border-top: 1px solid #eee; padding: 5px; background: white; }
-        .bot-input-area input { flex: 1; border: none; padding: 10px; outline: none; }
-        .bot-input-area button { background: #1e88e5; border: none; color: white; padding: 5px 15px; border-radius: 8px; }
+        /* Dark Mode Support for Bot */
+        body.dark-mode #bot-window { background: #1e293b; border-color: #334155; }
+        body.dark-mode #bot-messages { background: #0f172a; }
 
-        .bubble { max-width: 80%; padding: 10px; border-radius: 12px; font-size: 14px; line-height: 1.4; }
+        .bot-header { background: #1e88e5; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        
+        #bot-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 12px; }
+        
+        .bubble { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; }
         .msg-container { display: flex; width: 100%; }
         .msg-container.user { justify-content: flex-end; }
         .msg-container.user .bubble { background: #1e88e5; color: white; border-bottom-left-radius: 2px; }
+        
+        .msg-container.bot { justify-content: flex-start; }
         .msg-container.bot .bubble { background: #e9e9e9; color: #333; border-bottom-right-radius: 2px; }
+        body.dark-mode .msg-container.bot .bubble { background: #334155; color: #f1f5f9; }
+
+        .bot-input-area { display: flex; border-top: 1px solid #eee; padding: 8px; background: white; }
+        body.dark-mode .bot-input-area { background: #1e293b; border-color: #334155; }
+        .bot-input-area input { flex: 1; border: none; padding: 10px; outline: none; background: transparent; color: inherit; }
+        .bot-input-area button { background: #1e88e5; border: none; color: white; padding: 5px 15px; border-radius: 8px; transition: 0.3s; }
+        .bot-input-area button:hover { background: #1565c0; }
+
+        /* Link Button Style inside Chat */
+        .bot-link-btn {
+            display: inline-block; background: linear-gradient(135deg, #1e88e5, #42a5f5);
+            color: white !important; padding: 8px 12px; border-radius: 8px;
+            text-decoration: none !important; margin-top: 8px; width: 100%;
+            text-align: center; font-weight: 500; transition: 0.3s;
+        }
+        .bot-link-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
@@ -88,21 +88,15 @@
             <div class="row mb-4">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: wrap; gap: 1rem;">
                     <div>
-                        <h1 style="font-weight: 700; color: var(--primary)">
-                            مواد قسم علم الحاسوب
-                        </h1>
-                        <p style="color: #64748b; margin-bottom: 0">
-                            الجامعة العربية الأمريكية - كلية تكنولوجيا المعلومات
-                        </p>
+                        <h1 style="font-weight: 700; color: var(--primary)">مواد قسم علم الحاسوب</h1>
+                        <p style="color: #64748b; margin-bottom: 0">الجامعة العربية الأمريكية - كلية تكنولوجيا المعلومات</p>
                     </div>
                     <div style="display: flex; gap: 1rem; align-items: center;">
                         <a href="https://t.me/+FXBLkcvtp780NjQ0" target="_blank" class="telegram-link">
-                            <i class="fab fa-telegram"></i>
-                            <span>قناة Telegram</span>
+                            <i class="fab fa-telegram"></i> <span>قناة Telegram</span>
                         </a>
                         <a href="https://t.me/+1E5JKHa6wlQxZTM0" target="_blank" class="telegram-link" style="background: linear-gradient(135deg, #0aa355 0%, #088c3c 100%);">
-                            <i class="fab fa-telegram"></i>
-                            <span>جروب المناقشات</span>
+                            <i class="fab fa-telegram"></i> <span>جروب المناقشات</span>
                         </a>
                     </div>
                 </div>
@@ -111,18 +105,14 @@
             <div class="search-bar-container">
                 <div class="search-bar">
                     <input type="text" class="form-control" id="searchInput" placeholder="اسم المساق أو الكود..." />
-                    <button class="btn btn-primary" id="searchBtn">
-                        <i class="fas fa-search"></i> بحث
-                    </button>
+                    <button class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> بحث</button>
                 </div>
             </div>
 
             <div class="filters-container">
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="filter-label">
-                            <i class="fas fa-book"></i> السنة
-                        </label>
+                        <label class="filter-label"><i class="fas fa-book"></i> السنة</label>
                         <select class="form-select" id="yearFilter">
                             <option value="">كل السنوات</option>
                             <option value="1">سنة أولى</option>
@@ -131,31 +121,21 @@
                             <option value="4">سنة رابعة</option>
                         </select>
                     </div>
-
                     <div class="col-md-4">
-                        <label class="filter-label">
-                            <i class="fas fa-calendar"></i> الفصل
-                        </label>
+                        <label class="filter-label"><i class="fas fa-calendar"></i> الفصل</label>
                         <select class="form-select" id="semesterFilter">
                             <option value="">كل الفصول</option>
                             <option value="1">الفصل الأول</option>
                             <option value="2">الفصل الثاني</option>
                         </select>
                     </div>
-
                     <div class="col-md-4">
-                        <label class="filter-label">
-                            <i class="fas fa-tag"></i> النوع
-                        </label>
+                        <label class="filter-label"><i class="fas fa-tag"></i> النوع</label>
                         <select class="form-select" id="categoryFilter">
                             <option value="">كل الأنواع</option>
                             <option value="اجباري جامعة">إجباري جامعة</option>
                             <option value="اجباري كلية">إجباري كلية</option>
                             <option value="اجباري تخصص">إجباري تخصص</option>
-                            <option value="اختياري تخصص">اختياري تخصص</option>
-                            <option value="اختياري جامعة">اختياري جامعة</option>
-                            <option value="مساق حر">مساق حر</option>
-                            <option value="ملفات أخرى">ملفات أخرى (موارد إضافية)</option>
                         </select>
                     </div>
                 </div>
@@ -172,38 +152,11 @@
                 <div class="footer-section">
                     <h4><i class="fas fa-user"></i> محمد أبو شحادة</h4>
                     <div class="footer-links">
-                        <a href="https://www.linkedin.com/in/mohammad-abushehada/" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="https://github.com/Mohammad-AbuShehada" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                        <a href="https://www.youtube.com/channel/UCfAN385oneBRauz096gkQow" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-youtube"></i> YouTube
-                        </a>
+                        <a href="https://www.linkedin.com/in/mohammad-abushehada/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                        <a href="https://github.com/Mohammad-AbuShehada" target="_blank"><i class="fab fa-github"></i> GitHub</a>
                     </div>
                 </div>
-
-                <div class="footer-section">
-                    <h4><i class="fas fa-user"></i> ضحى كميل</h4>
-                    <div class="footer-links">
-                        <a href="https://www.linkedin.com/in/duha-kmail/" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-linkedin"></i> LinkedIn
-                        </a>
-                        <a href="https://github.com/Duha-kmail" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-github"></i> GitHub
-                        </a>
-                    </div>
                 </div>
-
-                <div class="footer-section">
-                    <h4><i class="fas fa-info-circle"></i> عن الموقع</h4>
-                    <div class="footer-links">
-                        <a href="about.html">الروابط والملفات</a>
-                        <a href="index.html">المواد الدراسية</a>
-                    </div>
-                </div>
-            </div>
             <div class="footer-bottom">
                 <p>&copy; 2025 الجامعة العربية الأمريكية - قسم علم الحاسوب. جميع الحقوق محفوظة.</p>
             </div>
@@ -217,11 +170,13 @@
 
 <div id="bot-window">
     <div class="bot-header">
-        <span>مبتكر - مساعد الطلاب</span>
-        <span onclick="toggleBot()" style="cursor:pointer">×</span>
+        <span><i class="fas fa-brain me-2"></i> مبتكر - مساعد الطلاب</span>
+        <span onclick="toggleBot()" style="cursor:pointer"><i class="fas fa-times"></i></span>
     </div>
     <div id="bot-messages">
-        <div class="msg-container bot"><div class="bubble">مرحباً! اسألني عن أي مادة وسأحاول إيجاد روابطها لك.</div></div>
+        <div class="msg-container bot">
+            <div class="bubble">مرحباً! اسألني عن أي مادة وسأحاول إيجاد روابطها لك.</div>
+        </div>
     </div>
     <div class="bot-input-area">
         <input type="text" id="bot-input" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter') sendToBot()">
@@ -233,26 +188,31 @@
 <script src="./js/main.js"></script>
 
 <script>
+    // Toggle Window
     function toggleBot() {
         const win = document.getElementById('bot-window');
         win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
     }
 
+    // Send Message Logic
     async function sendToBot() {
         const input = document.getElementById('bot-input');
         const text = input.value.trim();
         if(!text) return;
 
         const messages = document.getElementById('bot-messages');
+        
+        // Add User Message
         messages.innerHTML += `<div class="msg-container user"><div class="bubble">${text}</div></div>`;
         input.value = "";
         messages.scrollTop = messages.scrollHeight;
 
-        // لودر بسيط
+        // Add Loader
         const loader = document.createElement('div');
         loader.className = 'msg-container bot';
         loader.innerHTML = `<div class="bubble">...</div>`;
         messages.appendChild(loader);
+        messages.scrollTop = messages.scrollHeight;
 
         try {
             const res = await fetch("/chat", {
@@ -264,13 +224,18 @@
             loader.remove();
 
             let reply = data.reply;
-            if(reply.startsWith("http")) {
-                reply = `<a href="${reply}" target="_blank" style="color:#1e88e5; text-decoration:underline;">اضغط هنا لفتح الرابط</a>`;
+
+            // SMART LINK DETECTION: Converts links to sleek buttons
+            if(reply.includes("http")) {
+                const urlRegex = /(https?:\/\/[^\s]+)/g;
+                reply = reply.replace(urlRegex, (url) => {
+                    return `<a href="${url}" target="_blank" class="bot-link-btn"><i class="fas fa-external-link-alt"></i> فتح الرابط المستخرج</a>`;
+                });
             }
 
             messages.innerHTML += `<div class="msg-container bot"><div class="bubble">${reply}</div></div>`;
         } catch(e) {
-            loader.innerHTML = `<div class="bubble">عذراً، حدث خطأ.</div>`;
+            loader.innerHTML = `<div class="bubble">عذراً، حدث خطأ في الاتصال بالسيرفر.</div>`;
         }
         messages.scrollTop = messages.scrollHeight;
     }
