@@ -4,165 +4,133 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AAUP - مواد قسم علم الحاسوب</title>
-
+    
     <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" type="image/x-icon">
-
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <style>
+        /* ===== CHATBOT STYLES ===== */
         #bot-launcher {
             position: fixed; bottom: 25px; left: 25px; width: 60px; height: 60px;
             background: linear-gradient(135deg, #1e88e5, #1565c0);
             border-radius: 50%; display: flex; justify-content: center; align-items: center;
             color: white; font-size: 26px; cursor: pointer; z-index: 9999;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: all 0.3s ease;
         }
+        #bot-launcher:hover { transform: scale(1.1); }
+
         #bot-window {
             position: fixed; bottom: 95px; left: 25px; width: 350px; height: 500px;
             background: white; border-radius: 15px; display: none;
             flex-direction: column; overflow: hidden; z-index: 9999;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid #ddd;
+            max-width: 90vw;
         }
+
         .bot-header {
-            background: #1e88e5; color: white; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center;
+            background: #1e88e5;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
         }
-        #bot-messages {
-            flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9;
-        }
-        .bubble {
-            padding: 10px; border-radius: 12px; margin-bottom: 10px;
-        }
-        .msg-container.user { text-align: right; }
-        .msg-container.user .bubble { background: #1e88e5; color: white; }
-        .msg-container.bot .bubble { background: #e9e9e9; }
-        .bot-input-area {
-            display: flex; border-top: 1px solid #eee; padding: 8px;
-        }
-        .bot-input-area input {
-            flex: 1; border: none; padding: 10px;
-        }
-        .bot-input-area button {
-            background: #1e88e5; color: white; border: none;
-            padding: 5px 15px; border-radius: 8px;
-        }
-        .bot-link-btn {
-            display: block; background: #1e88e5; color: white !important;
-            padding: 8px; border-radius: 8px; text-align: center; margin-top: 5px;
+
+        .bot-header small {
+            display: block;
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 3px;
         }
     </style>
 </head>
-
 <body>
-<div id="app">
 
-    <!-- NAV -->
+<div id="app">
+    <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('home') }}">
                 <i class="fas fa-graduation-cap"></i>
                 <span>AAUP - CS HUB</span>
             </a>
+            <div class="nav-links">
+                <a href="{{ url_for('about') }}" class="nav-link">
+                    <i class="fas fa-link"></i> دليل الموقع 
+                </a>
+                <a href="{{ url_for('home') }}" class="nav-link active">
+                    <i class="fas fa-book"></i> المواد
+                </a>
+            </div>
         </div>
     </nav>
 
     <!-- CONTENT -->
-    <div class="container text-center mt-5">
+    <div class="container my-4">
         <h1>مواد قسم علم الحاسوب</h1>
-        <p>ابحث عن أي مادة وسيتم عرضها لك</p>
-    </div>
 
+        <!-- FILTERS -->
+        <div class="row">
+            <div class="col-md-4">
+                <label>السنة</label>
+                <select class="form-select">
+                    <option>سنة أولى</option>
+                    <option>سنة ثانية</option>
+                    <option>سنة ثالثة</option>
+                    <option>سنة رابعة</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label>الفصل</label>
+                <select class="form-select">
+                    <option>الفصل الأول</option>
+                    <option>الفصل الثاني</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label>النوع</label>
+                <select class="form-select">
+                    <option>إجباري جامعة</option>
+                    <option>إجباري كلية</option>
+                    <option>إجباري تخصص</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- 🔥 BOT -->
+<!-- BOT -->
 <div id="bot-launcher" onclick="toggleBot()">
     <i class="fas fa-robot"></i>
 </div>
 
 <div id="bot-window">
-
-    <!-- HEADER -->
     <div class="bot-header">
-        <span>
-            🤖 مبتكر - مساعد الطلاب <br>
-            <small style="font-size:12px;">💻 تطوير: ساجد كتانه</small>
-        </span>
-        <span onclick="toggleBot()" style="cursor:pointer">✖</span>
+        <span><i class="fas fa-brain me-2"></i> مبتكر - مساعد الطلاب</span>
+        <!-- ✅ الإضافة -->
+        <small>Developed by Sajed Kittaneh</small>
     </div>
+
     <div id="bot-messages">
         <div class="msg-container bot">
-            <div class="bubble">
-                👋 مرحباً!<br>
-                اسألني عن أي مادة وسأعطيك الرابط 📚<br><br>
-                <small>تطوير: ساجد كتانه</small>
-            </div>
+            <div class="bubble">مرحباً! اسألني عن أي مادة.</div>
         </div>
     </div>
 
-    <!-- INPUT -->
     <div class="bot-input-area">
-        <input type="text" id="bot-input" placeholder="اكتب رسالتك..."
-               onkeypress="if(event.key==='Enter') sendToBot()">
+        <input type="text" id="bot-input">
         <button onclick="sendToBot()">إرسال</button>
     </div>
-
-    <!-- FOOTER -->
-    <div style="text-align:center; font-size:12px; padding:5px; color:#888;">
-        Developed by ساجد كتانه
-    </div>
-
 </div>
-
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
 function toggleBot() {
     const win = document.getElementById('bot-window');
     win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
-}
-
-async function sendToBot() {
-    const input = document.getElementById('bot-input');
-    const text = input.value.trim();
-    if(!text) return;
-
-    const messages = document.getElementById('bot-messages');
-
-    messages.innerHTML += `
-        <div class="msg-container user">
-            <div class="bubble">${text}</div>
-        </div>
-    `;
-
-    input.value = "";
-
-    try {
-        const res = await fetch("/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: text })
-        });
-
-        const data = await res.json();
-        let reply = data.reply;
-
-        if(reply.includes("http")) {
-            reply = `<a href="${reply}" target="_blank" class="bot-link-btn">فتح الرابط</a>`;
-        }
-
-        messages.innerHTML += `
-            <div class="msg-container bot">
-                <div class="bubble">${reply}</div>
-            </div>
-        `;
-    } catch {
-        messages.innerHTML += `<div class="msg-container bot"><div class="bubble">خطأ</div></div>`;
-    }
-
-    messages.scrollTop = messages.scrollHeight;
 }
 </script>
 
