@@ -13,13 +13,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <style>
-        /* ===== CHATBOT IMPROVED STYLES (ابقيتها داخل الملف للسهولة) ===== */
         #bot-launcher {
             position: fixed; bottom: 25px; left: 25px; width: 60px; height: 60px;
             background: linear-gradient(135deg, #1e88e5, #1565c0);
             border-radius: 50%; display: flex; justify-content: center; align-items: center;
             color: white; font-size: 26px; cursor: pointer; z-index: 9999;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3); transition: 0.3s;
         }
         #bot-launcher:hover { transform: scale(1.1); }
 
@@ -27,196 +26,163 @@
             position: fixed; bottom: 95px; left: 25px; width: 350px; height: 500px;
             background: white; border-radius: 15px; display: none;
             flex-direction: column; overflow: hidden; z-index: 9999;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid #ddd;
-            max-width: 90vw;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
-        body.dark-mode #bot-window { background: #1e293b; border-color: #334155; }
-        body.dark-mode #bot-messages { background: #0f172a; }
-        .bot-header { background: #1e88e5; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        #bot-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 12px; }
-        .bubble { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; }
-        .msg-container { display: flex; width: 100%; }
-        .msg-container.user { justify-content: flex-end; }
-        .msg-container.user .bubble { background: #1e88e5; color: white; border-bottom-left-radius: 2px; }
-        .msg-container.bot { justify-content: flex-start; }
-        .msg-container.bot .bubble { background: #e9e9e9; color: #333; border-bottom-right-radius: 2px; }
-        body.dark-mode .msg-container.bot .bubble { background: #334155; color: #f1f5f9; }
-        .bot-input-area { display: flex; border-top: 1px solid #eee; padding: 8px; background: white; }
-        body.dark-mode .bot-input-area { background: #1e293b; border-color: #334155; }
-        .bot-input-area input { flex: 1; border: none; padding: 10px; outline: none; background: transparent; color: inherit; }
-        .bot-input-area button { background: #1e88e5; border: none; color: white; padding: 5px 15px; border-radius: 8px; transition: 0.3s; }
+
+        .bot-header {
+            background: #1e88e5;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #bot-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f9f9f9;
+        }
+
+        .bubble {
+            max-width: 85%;
+            padding: 10px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+        }
+
+        .msg-container.user { text-align: right; }
+        .msg-container.user .bubble { background: #1e88e5; color: white; }
+
+        .msg-container.bot .bubble { background: #e9e9e9; }
+
+        .bot-input-area {
+            display: flex;
+            border-top: 1px solid #eee;
+            padding: 8px;
+        }
+
+        .bot-input-area input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            outline: none;
+        }
+
+        .bot-input-area button {
+            background: #1e88e5;
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 8px;
+        }
+
         .bot-link-btn {
-            display: inline-block; background: linear-gradient(135deg, #1e88e5, #42a5f5);
-            color: white !important; padding: 8px 12px; border-radius: 8px;
-            text-decoration: none !important; margin-top: 8px; width: 100%;
-            text-align: center; font-weight: 500; transition: 0.3s;
+            display: block;
+            background: #1e88e5;
+            color: white !important;
+            padding: 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 5px;
+            text-align: center;
         }
     </style>
 </head>
+
 <body>
-<div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}">
-                <i class="fas fa-graduation-cap"></i>
-                <span>AAUP - CS HUB</span>
-            </a>
-            <div class="nav-links">
-                <div style="width: 1px; height: 30px; background: rgba(255,255,255,0.3);"></div>
-                <a href="{{ url_for('about') }}" class="nav-link" style="font-size: 1.1rem;">
-                    <i class="fas fa-link"></i> دليل الموقع 
-                </a>
-                <a href="{{ url_for('home') }}" class="nav-link active" style="font-size: 1.1rem;">
-                    <i class="fas fa-book"></i> المواد
-                </a>
-                <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
-                    <i class="fas fa-moon"></i>
-                </button> 
-            </div>
-        </div>
-    </nav>
 
-    <div class="container my-4" style="flex: 1;">
-        <div id="coursesPage" class="page-section active">
-            <div class="row mb-4">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; flex-wrap: wrap; gap: 1rem;">
-                    <div>
-                        <h1 style="font-weight: 700; color: var(--primary)">مواد قسم علم الحاسوب</h1>
-                        <p style="color: #64748b; margin-bottom: 0">الجامعة العربية الأمريكية - كلية تكنولوجيا المعلومات</p>
-                    </div>
-                    <div style="display: flex; gap: 1rem; align-items: center;">
-                        <a href="https://t.me/+FXBLkcvtp780NjQ0" target="_blank" class="telegram-link">
-                            <i class="fab fa-telegram"></i> <span>قناة Telegram</span>
-                        </a>
-                        <a href="https://t.me/+1E5JKHa6wlQxZTM0" target="_blank" class="telegram-link" style="background: linear-gradient(135deg, #0aa355 0%, #088c3c 100%);">
-                            <i class="fab fa-telegram"></i> <span>جروب المناقشات</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="search-bar-container">
-                <div class="search-bar">
-                    <input type="text" class="form-control" id="searchInput" placeholder="اسم المساق أو الكود..." />
-                    <button class="btn btn-primary" id="searchBtn"><i class="fas fa-search"></i> بحث</button>
-                </div>
-            </div>
-
-            <div class="filters-container">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="filter-label"><i class="fas fa-book"></i> السنة</label>
-                        <select class="form-select" id="yearFilter">
-                            <option value="">كل السنوات</option>
-                            <option value="1">سنة أولى</option>
-                            <option value="2">سنة ثانية</option>
-                            <option value="3">سنة ثالثة</option>
-                            <option value="4">سنة رابعة</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="filter-label"><i class="fas fa-calendar"></i> الفصل</label>
-                        <select class="form-select" id="semesterFilter">
-                            <option value="">كل الفصول</option>
-                            <option value="1">الفصل الأول</option>
-                            <option value="2">الفصل الثاني</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="filter-label"><i class="fas fa-tag"></i> النوع</label>
-                        <select class="form-select" id="categoryFilter">
-                            <option value="">كل الأنواع</option>
-                            <option value="اجباري جامعة">إجباري جامعة</option>
-                            <option value="اجباري كلية">إجباري كلية</option>
-                            <option value="اجباري تخصص">إجباري تخصص</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="results-counter" id="resultsCounter"></div>
-            <div id="coursesContainer"></div>
-        </div>
-    </div>
-
-    <footer class="footer">
-        <div class="container text-center">
-            <div class="footer-bottom">
-                <p>&copy; 2025 الجامعة العربية الأمريكية - قسم علم الحاسوب. جميع الحقوق محفوظة.</p>
-            </div>
-        </div>
-    </footer>
-</div>
-
+<!-- زر البوت -->
 <div id="bot-launcher" onclick="toggleBot()">
     <i class="fas fa-robot"></i>
 </div>
 
+<!-- نافذة البوت -->
 <div id="bot-window">
+
+    <!-- 🔥 الهيدر -->
     <div class="bot-header">
-        <span><i class="fas fa-brain me-2"></i> مبتكر - مساعد الطلاب</span>
-        <span onclick="toggleBot()" style="cursor:pointer"><i class="fas fa-times"></i></span>
+        <span>
+            <i class="fas fa-brain me-2"></i>
+            مبتكر - مساعد الطلاب <br>
+            <small style="font-size: 12px; opacity: 0.9;">
+                💻 تطوير: ساجد كتانه
+            </small>
+        </span>
+        <span onclick="toggleBot()" style="cursor:pointer">
+            <i class="fas fa-times"></i>
+        </span>
     </div>
+
+    <!-- 💬 الرسائل -->
     <div id="bot-messages">
         <div class="msg-container bot">
-            <div class="bubble">مرحباً! اسألني عن أي مادة وسأحاول إيجاد روابطها لك.</div>
+            <div class="bubble">
+                👋 مرحباً!<br>
+                أنا مساعدك الذكي للمواد 📚<br>
+                اسألني عن أي مادة وسأعطيك روابطها<br><br>
+                
+            </div>
         </div>
     </div>
+
+    <!-- ⌨️ الإدخال -->
     <div class="bot-input-area">
-        <input type="text" id="bot-input" placeholder="اكتب رسالتك..." onkeypress="if(event.key==='Enter') sendToBot()">
-        <button onclick="sendToBot()"><i class="fas fa-paper-plane"></i></button>
+        <input type="text" id="bot-input" placeholder="اكتب رسالتك..."
+               onkeypress="if(event.key==='Enter') sendToBot()">
+        <button onclick="sendToBot()">
+            <i class="fas fa-paper-plane"></i>
+        </button>
     </div>
+
+    <!-- 👇 توقيع -->
+    <div style="text-align:center; font-size:12px; padding:6px; color:#888;">
+        Developed by ساجد كتانه
+    </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
 <script>
-    function toggleBot() {
-        const win = document.getElementById('bot-window');
-        win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
-    }
+function toggleBot() {
+    const win = document.getElementById('bot-window');
+    win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+}
 
-    async function sendToBot() {
-        const input = document.getElementById('bot-input');
-        const text = input.value.trim();
-        if(!text) return;
+async function sendToBot() {
+    const input = document.getElementById('bot-input');
+    const text = input.value.trim();
+    if(!text) return;
 
-        const messages = document.getElementById('bot-messages');
-        messages.innerHTML += `<div class="msg-container user"><div class="bubble">${text}</div></div>`;
-        input.value = "";
-        messages.scrollTop = messages.scrollHeight;
+    const messages = document.getElementById('bot-messages');
 
-        const loader = document.createElement('div');
-        loader.className = 'msg-container bot';
-        loader.innerHTML = `<div class="bubble">...</div>`;
-        messages.appendChild(loader);
-        messages.scrollTop = messages.scrollHeight;
+    messages.innerHTML += `<div class="msg-container user"><div class="bubble">${text}</div></div>`;
+    input.value = "";
 
-        try {
-            // يتم إرسال الطلب لراوت /chat في Flask
-            const res = await fetch("/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: text })
-            });
-            const data = await res.json();
-            loader.remove();
+    try {
+        const res = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
 
-            let reply = data.reply;
-            if(reply.includes("http")) {
-                const urlRegex = /(https?:\/\/[^\s]+)/g;
-                reply = reply.replace(urlRegex, (url) => {
-                    return `<a href="${url}" target="_blank" class="bot-link-btn"><i class="fas fa-external-link-alt"></i> فتح الرابط المستخرج</a>`;
-                });
-            }
+        const data = await res.json();
 
-            messages.innerHTML += `<div class="msg-container bot"><div class="bubble">${reply}</div></div>`;
-        } catch(e) {
-            loader.innerHTML = `<div class="bubble">عذراً، حدث خطأ في الاتصال بالسيرفر.</div>`;
+        let reply = data.reply;
+
+        if(reply.includes("http")) {
+            reply = `<a href="${reply}" target="_blank" class="bot-link-btn">فتح الرابط</a>`;
         }
-        messages.scrollTop = messages.scrollHeight;
+
+        messages.innerHTML += `<div class="msg-container bot"><div class="bubble">${reply}</div></div>`;
+    } catch {
+        messages.innerHTML += `<div class="msg-container bot"><div class="bubble">خطأ بالسيرفر</div></div>`;
     }
+
+    messages.scrollTop = messages.scrollHeight;
+}
 </script>
+
 </body>
 </html>
