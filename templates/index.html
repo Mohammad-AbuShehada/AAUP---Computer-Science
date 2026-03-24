@@ -4,13 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AAUP - مواد قسم علم الحاسوب</title>
-    <link rel="icon" href="./img/logo.png" type="image/x-icon">
+    
+    <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" type="image/x-icon">
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="./css/main.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
     <style>
-        /* ===== CHATBOT IMPROVED STYLES ===== */
+        /* ===== CHATBOT IMPROVED STYLES (ابقيتها داخل الملف للسهولة) ===== */
         #bot-launcher {
             position: fixed; bottom: 25px; left: 25px; width: 60px; height: 60px;
             background: linear-gradient(135deg, #1e88e5, #1565c0);
@@ -27,53 +30,43 @@
             box-shadow: 0 15px 35px rgba(0,0,0,0.2); border: 1px solid #ddd;
             max-width: 90vw;
         }
-        /* Dark Mode Support for Bot */
         body.dark-mode #bot-window { background: #1e293b; border-color: #334155; }
         body.dark-mode #bot-messages { background: #0f172a; }
-
         .bot-header { background: #1e88e5; color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        
         #bot-messages { flex: 1; padding: 15px; overflow-y: auto; background: #f9f9f9; display: flex; flex-direction: column; gap: 12px; }
-        
         .bubble { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 14px; line-height: 1.5; position: relative; }
         .msg-container { display: flex; width: 100%; }
         .msg-container.user { justify-content: flex-end; }
         .msg-container.user .bubble { background: #1e88e5; color: white; border-bottom-left-radius: 2px; }
-        
         .msg-container.bot { justify-content: flex-start; }
         .msg-container.bot .bubble { background: #e9e9e9; color: #333; border-bottom-right-radius: 2px; }
         body.dark-mode .msg-container.bot .bubble { background: #334155; color: #f1f5f9; }
-
         .bot-input-area { display: flex; border-top: 1px solid #eee; padding: 8px; background: white; }
         body.dark-mode .bot-input-area { background: #1e293b; border-color: #334155; }
         .bot-input-area input { flex: 1; border: none; padding: 10px; outline: none; background: transparent; color: inherit; }
         .bot-input-area button { background: #1e88e5; border: none; color: white; padding: 5px 15px; border-radius: 8px; transition: 0.3s; }
-        .bot-input-area button:hover { background: #1565c0; }
-
-        /* Link Button Style inside Chat */
         .bot-link-btn {
             display: inline-block; background: linear-gradient(135deg, #1e88e5, #42a5f5);
             color: white !important; padding: 8px 12px; border-radius: 8px;
             text-decoration: none !important; margin-top: 8px; width: 100%;
             text-align: center; font-weight: 500; transition: 0.3s;
         }
-        .bot-link-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
     </style>
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
                 <i class="fas fa-graduation-cap"></i>
                 <span>AAUP - CS HUB</span>
             </a>
             <div class="nav-links">
                 <div style="width: 1px; height: 30px; background: rgba(255,255,255,0.3);"></div>
-                <a href="about.html" class="nav-link" style="font-size: 1.1rem;">
+                <a href="{{ url_for('about') }}" class="nav-link" style="font-size: 1.1rem;">
                     <i class="fas fa-link"></i> دليل الموقع 
                 </a>
-                <a href="index.html" class="nav-link active" style="font-size: 1.1rem;">
+                <a href="{{ url_for('home') }}" class="nav-link active" style="font-size: 1.1rem;">
                     <i class="fas fa-book"></i> المواد
                 </a>
                 <button class="theme-toggle" id="themeToggle" title="تبديل الوضع">
@@ -147,16 +140,7 @@
     </div>
 
     <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4><i class="fas fa-user"></i> محمد أبو شحادة</h4>
-                    <div class="footer-links">
-                        <a href="https://www.linkedin.com/in/mohammad-abushehada/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
-                        <a href="https://github.com/Mohammad-AbuShehada" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-                    </div>
-                </div>
-                </div>
+        <div class="container text-center">
             <div class="footer-bottom">
                 <p>&copy; 2025 الجامعة العربية الأمريكية - قسم علم الحاسوب. جميع الحقوق محفوظة.</p>
             </div>
@@ -185,29 +169,24 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="./js/main.js"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
 <script>
-    // Toggle Window
     function toggleBot() {
         const win = document.getElementById('bot-window');
         win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
     }
 
-    // Send Message Logic
     async function sendToBot() {
         const input = document.getElementById('bot-input');
         const text = input.value.trim();
         if(!text) return;
 
         const messages = document.getElementById('bot-messages');
-        
-        // Add User Message
         messages.innerHTML += `<div class="msg-container user"><div class="bubble">${text}</div></div>`;
         input.value = "";
         messages.scrollTop = messages.scrollHeight;
 
-        // Add Loader
         const loader = document.createElement('div');
         loader.className = 'msg-container bot';
         loader.innerHTML = `<div class="bubble">...</div>`;
@@ -215,6 +194,7 @@
         messages.scrollTop = messages.scrollHeight;
 
         try {
+            // يتم إرسال الطلب لراوت /chat في Flask
             const res = await fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -224,8 +204,6 @@
             loader.remove();
 
             let reply = data.reply;
-
-            // SMART LINK DETECTION: Converts links to sleek buttons
             if(reply.includes("http")) {
                 const urlRegex = /(https?:\/\/[^\s]+)/g;
                 reply = reply.replace(urlRegex, (url) => {

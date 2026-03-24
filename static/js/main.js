@@ -1,41 +1,63 @@
-// Load theme preference immediately (before page render)
+// 1. إدارة الوضع الليلي (Dark Mode) - تنفيذ فوري لمنع الوميض الأبيض
 (function() {
     if (localStorage.getItem("darkMode") === "true") {
         document.body.classList.add("dark-mode");
     }
 })();
 
-const themeToggle = document.getElementById("themeToggle");
-if (themeToggle) {
-    themeToggle.addEventListener("click", () => {
-        document.body.classList.toggle("dark-mode");
-        localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
-        updateThemeToggleIcon();
-    });
-}
-
+// 2. تحديث أيقونة الوضع الليلي
 function updateThemeToggleIcon() {
     const themeToggle = document.getElementById("themeToggle");
     if (themeToggle) {
         const icon = themeToggle.querySelector("i");
-        if (document.body.classList.contains("dark-mode")) {
-            icon.classList.remove("fa-moon");
-            icon.classList.add("fa-sun");
-        } else {
-            icon.classList.remove("fa-sun");
-            icon.classList.add("fa-moon");
+        if (icon) {
+            if (document.body.classList.contains("dark-mode")) {
+                icon.className = "fas fa-sun";
+            } else {
+                icon.className = "fas fa-moon";
+            }
         }
     }
 }
 
-updateThemeToggleIcon();
+// 3. عند تحميل المستند (DOMContentLoaded)
+document.addEventListener("DOMContentLoaded", () => {
+    // إعداد زر التبديل
+    const themeToggle = document.getElementById("themeToggle");
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+            updateThemeToggleIcon();
+        });
+        updateThemeToggleIcon(); // تحديث الأيقونة عند التحميل
+    }
 
-const searchBtn = document.getElementById("searchBtn");
-if (searchBtn) {
-    searchBtn.addEventListener("click", renderCourses);
-}
+    // إعداد البحث والفلاتر (فقط إذا كان الحاوية موجودة - أي في صفحة المواد)
+    const coursesContainer = document.getElementById("coursesContainer");
+    if (coursesContainer) {
+        const searchBtn = document.getElementById("searchBtn");
+        const searchInput = document.getElementById("searchInput");
+        const yearFilter = document.getElementById("yearFilter");
+        const semesterFilter = document.getElementById("semesterFilter");
+        const categoryFilter = document.getElementById("categoryFilter");
 
-// Courses Data
+        if (searchBtn) searchBtn.addEventListener("click", renderCourses);
+        if (yearFilter) yearFilter.addEventListener("change", renderCourses);
+        if (semesterFilter) semesterFilter.addEventListener("change", renderCourses);
+        if (categoryFilter) categoryFilter.addEventListener("change", renderCourses);
+        
+        if (searchInput) {
+            searchInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") renderCourses();
+            });
+        }
+
+        renderCourses(); // الرندر الأولي للمساقات
+    }
+});
+
+// 4. بيانات المساقات (قائمة كاملة)
 const coursesData = [
     {id: 1, name: "اسس اساليب البحث", code: "040521301", year: null, semester: null, category: "اجباري جامعة", driveUrl: "https://drive.google.com/drive/folders/1hbZC882Rf0Pk6s8_28DexaygIbPGTxym"},
     {id: 2, name: "خدمة المجتمع", code: "000011110", year: null, semester: null, category: "اجباري جامعة", driveUrl: "https://drive.google.com/drive/folders/1JPkZM0Ia-cedMOcZz_VweoVdPnaBAj2L"},
@@ -99,131 +121,63 @@ const coursesData = [
     {id: 60, name: "ملفات أخرى", code: null, year: null, semester: null, category: "ملفات أخرى", driveUrl: "https://drive.google.com/drive/folders/1aTYU-YwIGNGbo5TyfP3n-qsRuo3DZHVd?usp=drive_link"},
 ];
 
-// DOM Elements
-const searchInput = document.getElementById("searchInput");
-const yearFilter = document.getElementById("yearFilter");
-const semesterFilter = document.getElementById("semesterFilter");
-const categoryFilter = document.getElementById("categoryFilter");
-const coursesContainer = document.getElementById("coursesContainer");
-const resultsCounter = document.getElementById("resultsCounter");
-
-// Event listeners for filters
-if (searchInput) {
-    searchInput.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-            renderCourses();
-        }
-    });
-}
-if (yearFilter) yearFilter.addEventListener("change", renderCourses);
-if (semesterFilter) semesterFilter.addEventListener("change", renderCourses);
-if (categoryFilter) categoryFilter.addEventListener("change", renderCourses);
-
-// Get category badge class
+// 5. دالة Badge التنسيق
 function getCategoryBadgeClass(category) {
-    switch (category) {
-        case "اجباري جامعة":
-            return "mandatory-college";
-        case "اجباري كلية":
-            return "mandatory-college";
-        case "اجباري تخصص":
-            return "mandatory-specialty";
-        case "اختياري تخصص":
-            return "elective-specialty";
-        case "اختياري جامعة":
-            return "elective-college";
-        case "مساق حر":
-            return "free-course";
-        case "ملفات أخرى":
-            return "other-files";
-        default:
-            return "mandatory-specialty";
-    }
+    const map = {
+        "اجباري جامعة": "mandatory-college",
+        "اجباري كلية": "mandatory-college",
+        "اجباري تخصص": "mandatory-specialty",
+        "اختياري تخصص": "elective-specialty",
+        "اختياري جامعة": "elective-college",
+        "مساق حر": "free-course",
+        "ملفات أخرى": "other-files"
+    };
+    return map[category] || "mandatory-specialty";
 }
 
-// Render courses
+// 6. دالة عرض المساقات
 function renderCourses() {
-    if (!coursesContainer) return;
-    
-    const search = searchInput ? searchInput.value.toLowerCase().trim() : "";
-    const year = yearFilter ? yearFilter.value : "";
-    const semester = semesterFilter ? semesterFilter.value : "";
-    const category = categoryFilter ? categoryFilter.value : "";
+    const container = document.getElementById("coursesContainer");
+    if (!container) return;
 
-    const filtered = coursesData.filter((course) => {
-        let matchSearch = true;
-        if (search) {
-            matchSearch =
-                course.name.toLowerCase().includes(search) ||
-                (course.code && course.code.toLowerCase().includes(search)) ||
-                course.category.toLowerCase().includes(search) ||
-                (course.year && search.includes(String(course.year))) ||
-                (course.semester && search.includes(String(course.semester)));
-        }
-        const matchYear = year ? course.year === Number(year) : true;
-        const matchSemester = semester ? course.semester === Number(semester) : true;
-        const matchCategory = category ? course.category === category : true;
+    const search = document.getElementById("searchInput")?.value.toLowerCase().trim() || "";
+    const year = document.getElementById("yearFilter")?.value || "";
+    const semester = document.getElementById("semesterFilter")?.value || "";
+    const category = document.getElementById("categoryFilter")?.value || "";
 
+    const filtered = coursesData.filter(c => {
+        const matchSearch = !search || 
+            c.name.toLowerCase().includes(search) || 
+            (c.code && c.code.toLowerCase().includes(search));
+        const matchYear = !year || c.year === Number(year);
+        const matchSemester = !semester || c.semester === Number(semester);
+        const matchCategory = !category || c.category === category;
         return matchSearch && matchYear && matchSemester && matchCategory;
     });
 
-    coursesContainer.innerHTML = "";
-
-    if (filtered.length === 0) {
-        coursesContainer.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-search"></i>
-                <h3>لم يتم العثور على مساقات</h3>
-                <p>جرّب تغيير معايير البحث</p>
+    container.innerHTML = filtered.length ? filtered.map(course => `
+        <div class="course-card">
+            <div class="course-name">${course.name}</div>
+            ${course.code ? `<span class="course-code">${course.code}</span>` : ''}
+            <div class="course-meta">
+                ${course.year ? `<div class="meta-item"><i class="fas fa-book"></i> سنة ${course.year}</div>` : ""}
+                ${course.semester ? `<div class="meta-item"><i class="fas fa-calendar"></i> فصل ${course.semester}</div>` : ""}
+                <div class="meta-item"><i class="fas fa-tag"></i> ${course.category}</div>
             </div>
-        `;
-        if (resultsCounter) resultsCounter.textContent = "لا توجد نتائج";
-    } else {
-        filtered.forEach((course) => {
-            const codeHTML = course.code
-                ? `<span class="course-code">${course.code}</span>`
-                : "";
+            <span class="category-badge ${getCategoryBadgeClass(course.category)}">${course.category}</span>
+            <div style="margin-top: 1rem;">
+                <a href="${course.driveUrl}" target="_blank" class="drive-link-btn">
+                    <i class="fas fa-folder-open"></i> فتح في Google Drive
+                </a>
+            </div>
+        </div>
+    `).join('') : `
+        <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>لم يتم العثور على مساقات</h3>
+        </div>
+    `;
 
-            const yearText = course.year !== null ? `سنة ${course.year}` : "غير محدد";
-            const semesterText = course.semester !== null ? `فصل ${course.semester}` : "";
-
-            const courseCard = document.createElement("div");
-            courseCard.className = "course-card";
-            courseCard.innerHTML = `
-                <div class="course-name">${course.name}</div>
-                ${codeHTML}
-                <div class="course-meta">
-                    ${
-                        course.year !== null
-                            ? `<div class="meta-item"><i class="fas fa-book"></i> ${yearText}</div>`
-                            : ""
-                    }
-                    ${
-                        course.semester !== null
-                            ? `<div class="meta-item"><i class="fas fa-calendar"></i> ${semesterText}</div>`
-                            : ""
-                    }
-                    <div class="meta-item"><i class="fas fa-tag"></i> ${course.category}</div>
-                </div>
-                <div>
-                    <span class="category-badge ${getCategoryBadgeClass(course.category)}">
-                        ${course.category}
-                    </span>
-                </div>
-                <div style="margin-top: 1rem;">
-                    <a href="${course.driveUrl}?usp=sharing" target="_blank" rel="noopener noreferrer" class="drive-link-btn">
-                        <i class="fas fa-folder-open"></i> فتح في Google Drive
-                    </a>
-                </div>
-            `;
-            coursesContainer.appendChild(courseCard);
-        });
-
-        if (resultsCounter) resultsCounter.textContent = `عدد النتائج: ${filtered.length} مساق`;
-    }
-}
-
-// Initial render if on courses page
-if (coursesContainer) {
-    renderCourses();
+    const counter = document.getElementById("resultsCounter");
+    if (counter) counter.textContent = `عدد النتائج: ${filtered.length} مساق`;
 }
