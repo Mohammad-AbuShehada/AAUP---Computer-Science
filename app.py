@@ -3,7 +3,7 @@ import pandas as pd
 import time
 from difflib import SequenceMatcher
 
-app = Flask(_name_,
+app = Flask(__name__,
             static_folder='static',
             template_folder='templates')
 
@@ -48,7 +48,7 @@ def load_links():
         print(f"❌ Error loading data: {e}")
         return cache_links if cache_links else {}
 
-# 🔥 endpoint خفيف لـ UptimeRobot
+# endpoint لـ UptimeRobot
 @app.route('/ping')
 def ping():
     return "OK", 200
@@ -85,14 +85,14 @@ def chat():
             return jsonify({"reply": best_link})
 
         return jsonify({
-            "reply": "لم أجد رابطاً مناسباً. جرب كلمات اخرى ."
+            "reply": "لم أجد رابطاً مناسباً. جرب كلمات اخرى."
         })
 
     except Exception as e:
         print(f"❌ Chat error: {e}")
         return jsonify({"reply": "حدث خطأ فني، حاول لاحقاً."})
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     print("🚀 Starting server...")
-    load_links()  # 🔥 تحميل البيانات أول تشغيل
-    app.run()
+    load_links()  # تحميل البيانات أول تشغيل
+    app.run(debug=True)
