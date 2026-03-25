@@ -92,8 +92,8 @@ def chat():
 
     except Exception as e:
         print(f"❌ خطأ في معالجة الشات: {e}")
-        return jsonify({"reply": "حدث خطأ فني، يرجى المحاولة لاحقاً."}), 500
+        return jsonify({"reply": "حدث خطأ فني، يرجى المحاولة لاحقاً."})
 
 if __name__ == "__main__":
     # تشغيل السيرفر في وضع التطوير
-    app.run(debug=True, port=5000)
+    app.run()
