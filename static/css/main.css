@@ -462,9 +462,15 @@ body.dark-mode .footer {
     color: #cbd5e1;
 }
 
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 1rem;
+}
+
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 3rem;
     padding: 3rem 0;
 }
@@ -525,6 +531,45 @@ body.dark-mode .footer-bottom {
     border-top-color: var(--dark-border);
 }
 
+/* 📱 تابلت وموبايل */
+@media (max-width: 768px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 2rem;
+    }
+
+    .footer-section h4 {
+        justify-content: center;
+    }
+
+    .footer-links a {
+        justify-content: center;
+    }
+
+    .footer-links a:hover {
+        transform: none;
+    }
+}
+
+/* 📱 شاشات صغيرة */
+@media (max-width: 480px) {
+    .footer {
+        padding: 2rem 1rem;
+    }
+
+    .footer-content {
+        gap: 1.5rem;
+    }
+
+    .footer-section h4 {
+        font-size: 1rem;
+    }
+
+    .footer-links a {
+        font-size: 0.95rem;
+    }
+}
 .results-counter {
     color: #64748b;
     font-weight: 600;
