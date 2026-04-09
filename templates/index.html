@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AAUP - مواد قسم علم الحاسوب</title>
 
-```
-<!-- ✅ تعديل -->
+
 <link rel="icon" href="{{ url_for('static', filename='img/logo.png') }}" type="image/x-icon">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-<!-- ✅ تعديل -->
+
 <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 
 <style>
@@ -66,28 +65,28 @@
     .msg-container.user .bubble { background: #1e88e5; color: white; border-bottom-left-radius: 2px; }
     .msg-container.bot .bubble { background: #e9e9e9; color: #333; border-bottom-right-radius: 2px; }
 </style>
-```
+
 
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
-            <!-- ✅ تعديل -->
-           <a class="navbar-brand" href="{{ url_for('home') }}">
+            
+            <a class="navbar-brand" href="{{ url_for('home') }}">
                 <i class="fas fa-graduation-cap"></i>
                 <span>AAUP - CS HUB</span>
             </a>
             <div class="nav-links">
                 <div style="width: 1px; height: 30px; background: rgba(255,255,255,0.3);"></div>
 
-```
-            <!-- ✅ تعديل -->
+
+            
             <a href="{{ url_for('about') }}" class="nav-link" style="font-size: 1.1rem;">
                 <i class="fas fa-link"></i> دليل الموقع 
             </a>
 
-            <!-- ✅ تعديل -->
+            
             <a href="{{ url_for('home') }}" class="nav-link active" style="font-size: 1.1rem;">
                 <i class="fas fa-book"></i> المواد
             </a>
@@ -240,7 +239,7 @@
         </div>
     </div>
 </footer>
-```
+
 
 </div>
 
@@ -265,7 +264,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- ✅ تعديل -->
+
 
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
