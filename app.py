@@ -5,7 +5,7 @@ import os
 import re
 from difflib import SequenceMatcher
 from dotenv import load_dotenv
-from openai import OpenAI  # ⭐️ الجديد
+from openai import OpenAI  
 
 load_dotenv()
 
@@ -17,9 +17,8 @@ CACHE_TIME = 60 * 60 * 8  # 8 hours
 cache_links = {}
 last_update = 0
 
-HF_TOKEN = os.environ.get("HF_TOKEN", "").strip()  # ⭐️ بدل HF_API_KEY
+HF_TOKEN = os.environ.get("HF_TOKEN", "").strip()   
 
-# ⭐️ إعداد الكلاينت الجديد
 client = OpenAI(
     base_url="https://router.huggingface.co/v1",
     api_key=HF_TOKEN,
