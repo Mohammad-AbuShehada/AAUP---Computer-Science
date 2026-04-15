@@ -4,3 +4,4 @@ python-dotenv
 google-genai
 gunicorn
 openpyxl
+openai>=1.0.0
