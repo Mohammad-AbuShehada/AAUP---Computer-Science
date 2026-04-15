@@ -531,7 +531,7 @@ body.dark-mode .footer-bottom {
     border-top-color: var(--dark-border);
 }
 
-/* 📱 تابلت وموبايل */
+
 @media (max-width: 768px) {
     .footer-content {
         grid-template-columns: 1fr;
@@ -552,7 +552,7 @@ body.dark-mode .footer-bottom {
     }
 }
 
-/* 📱 شاشات صغيرة */
+
 @media (max-width: 480px) {
     .footer {
         padding: 2rem 1rem;

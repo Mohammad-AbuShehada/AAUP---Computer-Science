@@ -1,11 +1,11 @@
-// 1. إدارة الوضع الليلي (Dark Mode) - تنفيذ فوري لمنع الوميض الأبيض
+
 (function() {
     if (localStorage.getItem("darkMode") === "true") {
         document.body.classList.add("dark-mode");
     }
 })();
 
-// 2. تحديث أيقونة الوضع الليلي
+
 function updateThemeToggleIcon() {
     const themeToggle = document.getElementById("themeToggle");
     if (themeToggle) {
@@ -20,9 +20,9 @@ function updateThemeToggleIcon() {
     }
 }
 
-// 3. عند تحميل المستند (DOMContentLoaded)
+
 document.addEventListener("DOMContentLoaded", () => {
-    // إعداد زر التبديل
+    
     const themeToggle = document.getElementById("themeToggle");
     if (themeToggle) {
         themeToggle.addEventListener("click", () => {
@@ -30,10 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
             updateThemeToggleIcon();
         });
-        updateThemeToggleIcon(); // تحديث الأيقونة عند التحميل
+        updateThemeToggleIcon(); 
     }
 
-    // إعداد البحث والفلاتر (فقط إذا كان الحاوية موجودة - أي في صفحة المواد)
+
     const coursesContainer = document.getElementById("coursesContainer");
     if (coursesContainer) {
         const searchBtn = document.getElementById("searchBtn");
@@ -53,11 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        renderCourses(); // الرندر الأولي للمساقات
+        renderCourses(); 
     }
 });
 
-// 4. بيانات المساقات (قائمة كاملة)
+
 const coursesData = [
     {id: 1, name: "اسس اساليب البحث", code: "040521301", year: null, semester: null, category: "اجباري جامعة", driveUrl: "https://drive.google.com/drive/folders/1hbZC882Rf0Pk6s8_28DexaygIbPGTxym"},
     {id: 2, name: "خدمة المجتمع", code: "000011110", year: null, semester: null, category: "اجباري جامعة", driveUrl: "https://drive.google.com/drive/folders/1JPkZM0Ia-cedMOcZz_VweoVdPnaBAj2L"},
@@ -121,7 +121,7 @@ const coursesData = [
     {id: 60, name: "ملفات أخرى", code: null, year: null, semester: null, category: "ملفات أخرى", driveUrl: "https://drive.google.com/drive/folders/1aTYU-YwIGNGbo5TyfP3n-qsRuo3DZHVd?usp=drive_link"},
 ];
 
-// 5. دالة Badge التنسيق
+
 function getCategoryBadgeClass(category) {
     const map = {
         "اجباري جامعة": "mandatory-college",
@@ -135,7 +135,7 @@ function getCategoryBadgeClass(category) {
     return map[category] || "mandatory-specialty";
 }
 
-// 6. دالة عرض المساقات
+
 function renderCourses() {
     const container = document.getElementById("coursesContainer");
     if (!container) return;
