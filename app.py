@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, send_from_directory
 import pandas as pd
 import time
 import os
@@ -10,6 +10,8 @@ from openai import OpenAI
 load_dotenv()
 
 app = Flask(__name__)
+DIST_DIR = os.path.join(app.root_path, "dist")
+DIST_INDEX = os.path.join(DIST_DIR, "index.html")
 
 SHEET_ID = "1eX0HjdZKYD9TvvavRWzL1uQ0sCFv_u_X-38vNholUeA"
 CACHE_TIME = 60 * 60 * 8  # 8 hours
@@ -19,10 +21,12 @@ last_update = 0
 
 HF_TOKEN = os.environ.get("HF_TOKEN", "").strip()   
 
-client = OpenAI(
-    base_url="https://router.huggingface.co/v1",
-    api_key=HF_TOKEN,
-)
+client = None
+if HF_TOKEN:
+    client = OpenAI(
+        base_url="https://router.huggingface.co/v1",
+        api_key=HF_TOKEN,
+    )
 
 # ------------------ TEXT HELPERS ------------------
 
@@ -317,13 +321,20 @@ def ask_huggingface(user_message):
 
 # ------------------ ROUTES ------------------
 
+def serve_react_app():
+    return send_from_directory(DIST_DIR, "index.html")
+
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return serve_react_app()
 
 @app.route("/about")
 def about():
-    return render_template("about.html")
+    return serve_react_app()
+
+@app.route("/assets/<path:filename>")
+def react_assets(filename):
+    return send_from_directory(os.path.join(DIST_DIR, "assets"), filename)
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -353,6 +364,12 @@ def chat():
         return jsonify({"reply": best_link})
 
     return jsonify({"reply": ask_huggingface(user_message)})
+
+@app.route("/<path:path>")
+def react_fallback(path):
+    if path.startswith(("chat", "assets")):
+        return jsonify({"error": "Not found"}), 404
+    return serve_react_app()
 
 # ------------------ RUN ------------------
 

@@ -1,0 +1,9 @@
+node_modules/
+.venv/
+.npm-cache/
+dist/
+__pycache__/
+*.pyc
+.env
+vite-dev*.log
+flask-app*.log
