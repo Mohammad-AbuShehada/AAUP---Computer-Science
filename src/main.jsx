@@ -91,7 +91,13 @@ function App() {
           }
         },
         typography: {
-          fontFamily: "Cairo, Segoe UI, Tahoma, sans-serif",
+          fontFamily: "'IBM Plex Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif",
+          h1: { fontWeight: 800 },
+          h2: { fontWeight: 800 },
+          h3: { fontWeight: 800 },
+          h4: { fontWeight: 800 },
+          h5: { fontWeight: 800 },
+          h6: { fontWeight: 700 },
           button: { textTransform: "none", fontWeight: 700 }
         },
         shape: { borderRadius: 8 }
