@@ -374,7 +374,7 @@ function CourseCard({ course }) {
   return (
     <Card className="course-card" elevation={0}>
       <CardContent>
-        <Stack direction="row" alignItems="flex-start" gap={1.5} className="course-head">
+        <Box className="course-head">
           <Box className="course-icon">
             <AutoStoriesIcon />
           </Box>
@@ -382,12 +382,14 @@ function CourseCard({ course }) {
             <Typography className="course-name">{course.name}</Typography>
             {course.code ? <Chip label={course.code} className="course-code" /> : null}
           </Box>
-        </Stack>
-        <Stack direction="row" flexWrap="wrap" gap={1} className="course-meta">
-          {course.year ? <MetaItem icon={<WorkspacePremiumIcon />} text={`سنة ${course.year}`} /> : null}
-          {course.semester ? <MetaItem icon={<CalendarMonthIcon />} text={`فصل ${course.semester}`} /> : null}
-          <Chip label={course.category} className={`category-badge ${categoryClasses[course.category] || "mandatory-specialty"}`} />
-        </Stack>
+        </Box>
+        <Box className="course-details">
+          <Stack direction="row" flexWrap="wrap" gap={0.75} className="course-meta">
+            {course.year ? <MetaItem icon={<WorkspacePremiumIcon />} text={`سنة ${course.year}`} /> : null}
+            {course.semester ? <MetaItem icon={<CalendarMonthIcon />} text={`فصل ${course.semester}`} /> : null}
+            <Chip label={course.category} className={`category-badge ${categoryClasses[course.category] || "mandatory-specialty"}`} />
+          </Stack>
+        </Box>
         <Box className="course-actions">
           <Button href={course.driveUrl} target="_blank" variant="contained" className="drive-link-btn" startIcon={<FolderOpenIcon />} endIcon={<OpenInNewIcon />}>
             فتح في Google Drive
